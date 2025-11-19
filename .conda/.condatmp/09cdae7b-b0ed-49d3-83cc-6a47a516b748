@@ -1,0 +1,13 @@
+prefix=//tdp-ws2/Folder Redirection/troy.kettle/Documents/test/.conda/Library
+exec_prefix=//tdp-ws2/Folder Redirection/troy.kettle/Documents/test/.conda/Library
+libdir=//tdp-ws2/Folder Redirection/troy.kettle/Documents/test/.conda/Library/lib
+sharedlibdir=//tdp-ws2/Folder Redirection/troy.kettle/Documents/test/.conda/Library/lib
+includedir=//tdp-ws2/Folder Redirection/troy.kettle/Documents/test/.conda/Library/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.3.1
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}
