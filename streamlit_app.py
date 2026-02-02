@@ -472,9 +472,26 @@ def predict_revenue_advanced(dates, prices, forecast_periods=6):
             reg_lambda=1.0,
             random_state=42,
             verbosity=0,
-            n_jobs=-1
+            n_jobs=1
         )
-        model.fit(X_train, y_train)
+        # Ensure training arrays are numeric and finite to avoid XGBoost internal errors
+        X_train = np.asarray(X_train, dtype=np.float32)
+        y_train = np.asarray(y_train, dtype=np.float32)
+        X_test = np.asarray(X_test, dtype=np.float32) if 'X_test' in locals() else None
+
+        # Replace any inf values and ensure no NaNs remain
+        if not np.isfinite(X_train).all():
+            X_train = np.nan_to_num(X_train, nan=0.0, posinf=0.0, neginf=0.0)
+        if not np.isfinite(y_train).all():
+            y_train = np.nan_to_num(y_train, nan=0.0, posinf=0.0, neginf=0.0)
+
+        try:
+            model.fit(X_train, y_train)
+        except Exception as e:
+            import logging, traceback
+            logging.exception("XGBoost training failed in predict_revenue_advanced")
+            # Re-raise with the original traceback so Streamlit logs contain full details
+            raise
         
         # Evaluate on test set
         if len(X_test) > 0:
